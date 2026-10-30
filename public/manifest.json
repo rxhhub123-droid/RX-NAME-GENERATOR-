@@ -1,0 +1,21 @@
+{
+  "name": "亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗 - RX Generator",
+  "short_name": "RX Generator",
+  "description": "Free Fire stylish name generator, gaming symbols, custom fonts and invisible blank space tool.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/6q0XrBKv/file-00000000228082118a51e116fc12be7f.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/6q0XrBKv/file-00000000228082118a51e116fc12be7f.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

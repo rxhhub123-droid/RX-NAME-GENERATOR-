@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #09090b;
+  --s1: #141418;
+  --s2: #1c1c22;
+  --line: #25252d;
+  --line2: #34343e;
+  --text: #f6f6f8;
+  --mut: #9494a0;
+  --acc: #e11d2e;
+  --acc2: #ff5a6a;
+  --accg: linear-gradient(135deg, #ff5a6a 0%, #e11d2e 55%, #a3111f 100%);
+  --ui: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --glyph: "Segoe UI Symbol", "Noto Sans Symbols 2", "Noto Sans Symbols", "Noto Sans CJK JP", "Noto Sans JP", system-ui, sans-serif;
+}
+
+@property --ang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin-border {
+  to {
+    --ang: 360deg;
+  }
+}
+
+.spin-border-anim {
+  animation: spin-border 5s linear infinite;
+}
+
+.font-glyph {
+  font-family: var(--glyph);
+}
+
+body {
+  font-family: var(--ui);
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(900px 480px at 85% -8%, rgba(225, 29, 46, 0.15), transparent 62%),
+              radial-gradient(700px 420px at -10% 8%, rgba(255, 90, 106, 0.07), transparent 60%),
+              radial-gradient(600px 400px at 50% 115%, rgba(163, 17, 31, 0.07), transparent 60%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a33;
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a46;
+}
+
+/* Hide Google Translate toolbar, banners and tooltip popups */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+body {
+  top: 0px !important;
+  position: static !important;
+}
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
