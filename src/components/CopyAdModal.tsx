@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAdmin } from '../context/AdminContext';
 import { useLanguage } from '../context/LanguageContext';
-import { ShieldCheck, CheckCircle2, ShieldAlert, Sparkles, X, Lock, ExternalLink, ArrowRight } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ShieldAlert, Sparkles, X, Lock, ExternalLink, ArrowRight, Copy, Check } from 'lucide-react';
+import { copyTextToClipboard } from '../utils/clipboard';
 
 interface CopyAdModalProps {
   onNotify: (msg: string) => void;
@@ -21,6 +22,7 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
   const totalTime = config.countdownSeconds || 5;
   const [timeLeft, setTimeLeft] = useState(totalTime);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [justManualCopied, setJustManualCopied] = useState(false);
 
   // Keep references to prevent infinite re-render loops
   const onNotifyRef = useRef(onNotify);
@@ -29,11 +31,22 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
   const pendingTextRef = useRef(pendingTextToCopy);
   pendingTextRef.current = pendingTextToCopy;
 
+  const handleManualCopy = async () => {
+    const text = pendingTextRef.current;
+    if (text) {
+      const ok = await copyTextToClipboard(text);
+      setJustManualCopied(true);
+      onNotifyRef.current(t('copied') || 'কপি সম্পন্ন হয়েছে!');
+      setTimeout(() => setJustManualCopied(false), 2000);
+    }
+  };
+
   useEffect(() => {
     // Only run when modal opens
     if (!copyModalOpen) {
       setTimeLeft(totalTime);
       setIsCompleted(false);
+      setJustManualCopied(false);
       return;
     }
 
@@ -41,30 +54,26 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
     setIsCompleted(false);
 
     let current = totalTime;
-    const timer = setInterval(() => {
+    const timer = setInterval(async () => {
       current -= 1;
       if (current <= 0) {
         clearInterval(timer);
         setTimeLeft(0);
         setIsCompleted(true);
 
-        // Copy text to user's clipboard
+        // Copy text to user's clipboard using robust multi-layer clipboard helper
         const text = pendingTextRef.current;
         if (text) {
-          try {
-            navigator.clipboard.writeText(text);
-          } catch (err) {
-            console.error('Clipboard write error', err);
-          }
+          await copyTextToClipboard(text);
         }
 
-        onNotifyRef.current(t('verification_success_copy'));
+        onNotifyRef.current(t('verification_success_copy') || 'ভেরিফিকেশন সফল! নাম কপি সম্পন্ন হয়েছে।');
 
-        // Automatically close modal after 1.2s and return user to home page!
+        // Automatically close modal after 1.8s and return user to home page!
         setTimeout(() => {
           setCopyModalOpen(false);
           setPendingTextToCopy(null);
-        }, 1300);
+        }, 1800);
       } else {
         setTimeLeft(current);
       }
@@ -162,10 +171,30 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
           />
         </div>
 
-        {/* Selected Name Display */}
-        <div className="p-3 rounded-2xl bg-[#181822] border border-[#2a2a35] text-xs">
-          <span className="text-zinc-500 block mb-1 font-semibold">{t('your_selected_name')}</span>
-          <span className="font-glyph font-bold text-base text-white break-all">
+        {/* Selected Name Display with 1-click copy guarantee */}
+        <div 
+          onClick={handleManualCopy}
+          className="p-3.5 rounded-2xl bg-[#181822] border border-[#2a2a35] hover:border-red-500/50 cursor-pointer text-xs transition-all relative group shadow-inner"
+        >
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-zinc-400 font-semibold">{t('your_selected_name')}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleManualCopy();
+              }}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all ${
+                justManualCopied
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                  : 'bg-red-500/15 text-red-400 hover:bg-red-500 hover:text-white border border-red-500/30'
+              }`}
+            >
+              {justManualCopied ? <Check className="w-3 h-3 stroke-[2.5]" /> : <Copy className="w-3 h-3" />}
+              <span>{justManualCopied ? 'কপি হয়েছে!' : 'ট্যাপ করে কপি করুন'}</span>
+            </button>
+          </div>
+          <span className="font-glyph font-bold text-base sm:text-lg text-white break-all block py-1">
             {pendingTextToCopy}
           </span>
         </div>
@@ -177,20 +206,18 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
               href={config.directLinkUrl.trim()}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => {
+              onClick={async () => {
+                if (pendingTextRef.current) {
+                  await copyTextToClipboard(pendingTextRef.current);
+                }
                 if (!isCompleted) {
                   setTimeLeft(0);
                   setIsCompleted(true);
-                  if (pendingTextRef.current) {
-                    try {
-                      navigator.clipboard.writeText(pendingTextRef.current);
-                    } catch (e) {}
-                  }
-                  onNotifyRef.current(t('verification_success_copy'));
+                  onNotifyRef.current(t('verification_success_copy') || 'ভেরিফিকেশন সফল! নাম কপি সম্পন্ন হয়েছে।');
                   setTimeout(() => {
                     setCopyModalOpen(false);
                     setPendingTextToCopy(null);
-                  }, 1200);
+                  }, 1500);
                 }
               }}
               className="relative overflow-hidden w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-red-600 to-rose-600 hover:from-amber-400 hover:to-red-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-amber-600/30 flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 group border border-amber-300/40 select-none animate-pulse"
@@ -202,6 +229,20 @@ export const CopyAdModal: React.FC<CopyAdModalProps> = ({ onNotify }) => {
             <p className="text-[10px] text-zinc-500 mt-1.5">
               * নতুন ট্যাবে বিজ্ঞাপন ওপেন না হলে উপরের বাটনে ক্লিক করে আনলক করুন।
             </p>
+          </div>
+        )}
+
+        {/* Confirmation Button when completed */}
+        {isCompleted && (
+          <div className="pt-1 animate-in zoom-in">
+            <button
+              type="button"
+              onClick={handleManualCopy}
+              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+            >
+              <Check className="w-4 h-4 stroke-[3]" />
+              <span>১০০% নিশ্চিত কপি সম্পন্ন (আবার কপি করতে চাপুন)</span>
+            </button>
           </div>
         )}
 

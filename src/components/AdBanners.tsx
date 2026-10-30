@@ -102,16 +102,18 @@ export const BannerAdSlot: React.FC<BannerAdProps> = ({ type, className = '' }) 
   if (activeAds.length === 0) return null;
 
   return (
-    <div className={`my-3.5 flex flex-col items-center justify-center w-full overflow-hidden ${className}`}>
-      <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-500 mb-1 tracking-wider select-none">
-        <span className="w-1.5 h-1.5 rounded-full bg-red-500/60" />
-        <span>বিজ্ঞাপন • SPONSORED</span>
-      </div>
-      {activeAds.map(ad => (
-        <div key={ad.id} className="w-full flex justify-center items-center overflow-hidden">
-          <DynamicAdFrame ad={ad} />
+    <div className={`my-4 flex flex-col items-center justify-center w-full overflow-hidden ${className}`}>
+      <div className="w-full max-w-[760px] p-2.5 sm:p-3 rounded-2xl bg-[#121218]/90 border border-[#252533] shadow-xl shadow-black/50 flex flex-col items-center justify-center transition-all hover:border-red-500/30">
+        <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-500 mb-1.5 tracking-wider select-none">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm shadow-red-500 animate-pulse" />
+          <span>বিজ্ঞাপন • SPONSORED</span>
         </div>
-      ))}
+        {activeAds.map(ad => (
+          <div key={ad.id} className="w-full flex justify-center items-center overflow-hidden">
+            <DynamicAdFrame ad={ad} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

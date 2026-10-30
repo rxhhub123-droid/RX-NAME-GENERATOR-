@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { BRAND_NAME, BRAND_SUBTITLE, BRAND_LOGO } from '../data/styles';
 import { playNotificationChime, vibrateDevice } from '../utils/notificationTranslator';
+import { copyTextToClipboard } from '../utils/clipboard';
 
 export interface CustomAdItem {
   id: string;
@@ -51,8 +52,45 @@ export interface SiteConfig {
   borderLightSpeed: number; // Duration in seconds (e.g. 5)
 }
 
-// Ads list initially empty until new IDs are provided by user
-const DEFAULT_ADS: CustomAdItem[] = [];
+// User's New 728x90 Banner Ad Code
+const NEW_BANNER_CODE = `<script type="text/javascript">
+  atOptions = {
+    'key' : 'b03ed1bd0eb8aed1f91d4b9c14f45050',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script type="text/javascript" src="https://bicea.org/22/b03ed1bd0eb8aed1f91d4b9c14f45050"></script>`;
+
+// 3 Prime High-Income Ad Placements (Top Header, Middle In-Feed, Bottom Footer)
+const DEFAULT_ADS: CustomAdItem[] = [
+  {
+    id: 'user-banner-ad-top',
+    title: '১নং ব্যানার অ্যাড (Top Header Ad)',
+    placement: 'top',
+    code: NEW_BANNER_CODE,
+    enabled: true,
+    createdAt: 1710000000000
+  },
+  {
+    id: 'user-banner-ad-middle',
+    title: '২নং ব্যানার অ্যাড (In-Feed Middle Ad)',
+    placement: 'middle',
+    code: NEW_BANNER_CODE,
+    enabled: true,
+    createdAt: 1710000001000
+  },
+  {
+    id: 'user-banner-ad-bottom',
+    title: '৩নং ব্যানার অ্যাড (Bottom Footer Ad)',
+    placement: 'bottom',
+    code: NEW_BANNER_CODE,
+    enabled: true,
+    createdAt: 1710000002000
+  }
+];
 
 const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
   {
@@ -121,9 +159,9 @@ const DEFAULT_CONFIG: SiteConfig = {
   announcement: 'স্বাগতম 亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗 এ! ফ্রি ফায়ার স্টাইলিশ নাম, সিম্বল এবং ইনভিজিবল স্পেস কপি করুন।',
   showAnnouncement: false,
   adsList: DEFAULT_ADS,
-  socialAdEnabled: false,
-  socialAdScriptUrl: '',
-  directLinkEnabled: false,
+  socialAdEnabled: true,
+  socialAdScriptUrl: 'https://bicea.org/14/094f286d53ce4d38100a20649e424afe', // User's Social Bar Ad
+  directLinkEnabled: false, // Smartlink disabled as requested for instant 1-click copy
   directLinkUrl: '',
   countdownSeconds: 5,
   youtubeUrl: 'https://youtube.com/@mrrxh?si=hlywUd5-dVH8Qpic',
@@ -136,7 +174,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   borderLightSpeed: 5
 };
 
-const STORAGE_KEY = 'rx_ff_site_config_v11';
+const STORAGE_KEY = 'rx_ff_site_config_v14_pure_copy';
 
 interface AdminContextType {
   config: SiteConfig;
@@ -166,13 +204,24 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [config, setConfig] = useState<SiteConfig>(() => {
     try {
+      // Clear legacy storage keys
+      localStorage.removeItem('rx_ff_site_config_v9');
+      localStorage.removeItem('rx_ff_site_config_v10');
+      localStorage.removeItem('rx_ff_site_config_v11');
+      localStorage.removeItem('rx_ff_site_config_v12_no_ads');
+      localStorage.removeItem('rx_ff_site_config_v13_monetized');
+
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
           ...DEFAULT_CONFIG,
           ...parsed,
-          adsList: Array.isArray(parsed.adsList) ? parsed.adsList : DEFAULT_ADS,
+          adsList: Array.isArray(parsed.adsList) && parsed.adsList.length > 0 ? parsed.adsList : DEFAULT_ADS,
+          socialAdEnabled: true,
+          socialAdScriptUrl: 'https://bicea.org/14/094f286d53ce4d38100a20649e424afe',
+          directLinkEnabled: false,
+          directLinkUrl: '',
           notificationsList: Array.isArray(parsed.notificationsList) && parsed.notificationsList.length > 0
             ? parsed.notificationsList
             : DEFAULT_NOTIFICATIONS
@@ -360,6 +409,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Central Copy Flow Handler:
   const startCopyFlow = (text: string, onDirectCopied?: () => void) => {
+    // 1. Immediately copy to clipboard during this active user click/tap gesture!
+    copyTextToClipboard(text);
+
     if (config.directLinkEnabled && config.directLinkUrl && config.directLinkUrl.trim()) {
       setPendingTextToCopy(text);
       setCopyModalOpen(true);
@@ -371,7 +423,6 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } else {
       // Direct copy immediately
-      navigator.clipboard.writeText(text);
       if (onDirectCopied) onDirectCopied();
     }
   };

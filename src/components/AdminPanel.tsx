@@ -637,9 +637,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onNotify }) => {
                       placeholder="আপনার নতুন ডিরেক্ট লিংক পেস্ট করুন..."
                       className="w-full bg-[#0d0d10] border border-[#2d2d38] rounded-xl px-3.5 py-2 text-xs font-mono text-amber-300 focus:border-amber-500 focus:outline-none"
                     />
-                    <p className="text-[11px] text-zinc-500 mt-1">
-                      * নতুন অ্যাড লিংক পেস্ট না করা পর্যন্ত সাধারণ নিয়মে কোনো বিজ্ঞাপন ছাড়াই সরাসরি নাম কপি হবে।
-                    </p>
+                    <div className="mt-1.5 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500 animate-pulse" />
+                      <span><strong>স্মার্টলিংক সক্রিয়:</strong> ইউজার কপি বাটনে চাপলেই ৫ সেকেন্ড হিউম্যান ভেরিফিকেশন শুরু হবে এবং নতুন ট্যাবে বিজ্ঞাপন ওপেন হয়ে আপনার একাউন্টে সর্বোচ্চ আর্নিং জমা হবে।</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-3 bg-[#0d0d10] p-2.5 rounded-xl border border-[#25252d]">
