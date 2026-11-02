@@ -60,6 +60,25 @@ export const DynamicAdFrame: React.FC<{ ad: CustomAdItem }> = ({ ad }) => {
 </body>
 </html>`;
 
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Direct document.write write-in ensures same-origin domain attribution for Adsterra impression tracking
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    try {
+      const doc = iframe.contentWindow?.document || iframe.contentDocument;
+      if (doc) {
+        doc.open();
+        doc.write(adHtml);
+        doc.close();
+      }
+    } catch (e) {
+      iframe.srcdoc = adHtml;
+    }
+  }, [adHtml]);
+
   return (
     <div
       ref={containerRef}
@@ -76,6 +95,7 @@ export const DynamicAdFrame: React.FC<{ ad: CustomAdItem }> = ({ ad }) => {
         className="flex justify-center items-center shrink-0"
       >
         <iframe
+          ref={iframeRef}
           title={ad.title || "Advertisement"}
           srcDoc={adHtml}
           width={adWidth}
@@ -117,3 +137,39 @@ export const BannerAdSlot: React.FC<BannerAdProps> = ({ type, className = '' }) 
     </div>
   );
 };
+
+export const StickyBottomAd: React.FC = () => {
+  const { config } = useAdmin();
+  const [dismissed, setDismissed] = useState(false);
+
+  // Find enabled sticky or banner ad
+  const stickyAd = config.adsList.find(
+    ad => (ad.placement === 'sticky' || ad.placement === 'bottom') && ad.enabled
+  );
+
+  if (!stickyAd || dismissed) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#09090c]/95 backdrop-blur-xl border-t border-purple-500/30 p-1.5 shadow-[0_-10px_35px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center animate-in slide-in-from-bottom duration-300">
+      <div className="relative w-full max-w-[760px] flex flex-col items-center">
+        {/* Dismiss / Close button */}
+        <button
+          onClick={() => setDismissed(true)}
+          className="absolute -top-6 right-2 sm:right-0 px-2.5 py-0.5 rounded-t-lg bg-[#181822] border border-[#2d2d3d] border-b-0 text-[10px] text-zinc-400 hover:text-white flex items-center gap-1 shadow-md hover:bg-red-600 transition-colors"
+          title="বিজ্ঞাপন বন্ধ করুন"
+        >
+          <X className="w-3 h-3" />
+          <span>Hide</span>
+        </button>
+
+        <div className="flex items-center gap-1.5 text-[9px] uppercase font-bold text-zinc-400 mb-0.5 tracking-wider select-none">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400 animate-pulse" />
+          <span>স্পন্সরড ব্যানার • SPONSORED</span>
+        </div>
+
+        <DynamicAdFrame ad={stickyAd} />
+      </div>
+    </div>
+  );
+};
+

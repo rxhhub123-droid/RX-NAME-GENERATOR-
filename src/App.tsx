@@ -11,9 +11,8 @@ import { FontTab } from './components/FontTab';
 import { SymbolsTab } from './components/SymbolsTab';
 import { SpaceTab } from './components/SpaceTab';
 import { SocialBar } from './components/SocialBar';
-import { BannerAdSlot } from './components/AdBanners';
+import { BannerAdSlot, StickyBottomAd } from './components/AdBanners';
 import { AdminPanel } from './components/AdminPanel';
-import { CopyAdModal } from './components/CopyAdModal';
 import { Toast } from './components/Toast';
 import { AdminProvider, useAdmin } from './context/AdminContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -146,8 +145,8 @@ function MainApp() {
       {/* Secret Admin Panel Modal (Opened only by ROBIXHUNTER + 3x Enter in Generator) */}
       <AdminPanel onNotify={showToast} />
 
-      {/* 5-Second Adsterra Direct Link Verification Modal */}
-      <CopyAdModal onNotify={showToast} />
+      {/* High-Earning Sticky Bottom Ad for Maximum Viewable Impressions */}
+      <StickyBottomAd />
 
       {/* Instant Toast Notification */}
       <Toast message={toastMessage} submessage={config.brandName} />

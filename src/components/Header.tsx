@@ -47,54 +47,41 @@ export const Header: React.FC<HeaderProps> = ({ onCopyNotice }) => {
         <div className="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-red-600/20 blur-3xl pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.03] pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5">
-          {/* Logo Avatar (Boy's Gamer Photo or Custom/Fallback) */}
+        <div className="relative z-10 flex flex-col items-center justify-center text-center gap-2.5 sm:gap-3 py-1">
+          {/* 1. Logo Avatar (Centered at Top) */}
           {config.showLogo && (
             <div 
               onClick={handleCopyBrand}
               title="Click to copy brand name"
-              className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl shrink-0 p-1 bg-gradient-to-br from-[#ff5a6a] via-[#e11d2e] to-[#8f0d1c] shadow-lg shadow-red-600/50 cursor-pointer group transition-transform hover:scale-105"
+              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl p-1 bg-gradient-to-br from-[#a855f7] via-[#ef4444] to-[#eab308] shadow-xl shadow-purple-600/40 cursor-pointer group transition-transform hover:scale-105 active:scale-95"
             >
-              {config.brandLogo ? (
-                <img
-                  src={config.brandLogo}
-                  alt={config.brandName}
-                  className="w-full h-full object-cover rounded-[14px] sm:rounded-[20px]"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    // fallback if link broken
-                    (e.target as HTMLImageElement).src = 'https://i.postimg.cc/6q0XrBKv/file-00000000228082118a51e116fc12be7f.png';
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full rounded-[14px] sm:rounded-[20px] bg-zinc-900 flex items-center justify-center text-red-500">
-                  <Flame className="w-8 h-8" />
-                </div>
-              )}
-              <div className="absolute -bottom-1 -right-1 bg-black/80 border border-red-500/40 rounded-full p-1 text-red-400 group-hover:scale-110 transition-transform">
-                <Flame className="w-3.5 h-3.5" />
+              <img
+                src={config.brandLogo || '/logo.png'}
+                alt={config.brandName}
+                className="w-full h-full object-cover rounded-[20px]"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/logo.png';
+                }}
+              />
+              <div className="absolute -bottom-1 -right-1 bg-black/85 border border-purple-500/50 rounded-full p-1.5 text-amber-400 group-hover:scale-110 transition-transform shadow-md">
+                <Sparkles className="w-3.5 h-3.5" />
               </div>
             </div>
           )}
 
-          {/* Text Info */}
-          <div className="text-center sm:text-left min-w-0">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-b from-white via-white to-red-200 bg-clip-text text-transparent drop-shadow-md">
-                {config.brandName || '亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗'}
-              </h1>
-              {config.showBadge && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-500/15 border border-red-500/30 text-red-400">
-                  <Sparkles className="w-3 h-3" /> {config.brandBadge || 'FF PRO'}
-                </span>
-              )}
+          {/* 2. Brand Name (Right Below Logo) */}
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-amber-100 to-purple-200 bg-clip-text text-transparent drop-shadow-md">
+            {config.brandName || '✦ 𝑹𝑿 𝑵𝑨𝑴𝑬 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑶𝑹 ✦'}
+          </h1>
+
+          {/* 3. PRIME RXH Badge (Right Below Name) */}
+          {config.showBadge && (
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black bg-gradient-to-r from-purple-500/25 via-amber-500/20 to-purple-500/25 border border-amber-400/40 text-amber-300 shadow-sm shadow-amber-500/20 tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <span>{config.brandBadge || 'PRIME RXH'}</span>
             </div>
-            {config.brandSubtitle && (
-              <p className="mt-1 text-xs sm:text-sm font-semibold tracking-wide bg-gradient-to-r from-red-300 via-rose-200 to-zinc-400 bg-clip-text text-transparent">
-                {config.brandSubtitle}
-              </p>
-            )}
-          </div>
+          )}
         </div>
       </header>
     </>

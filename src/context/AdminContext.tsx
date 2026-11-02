@@ -6,7 +6,7 @@ import { copyTextToClipboard } from '../utils/clipboard';
 export interface CustomAdItem {
   id: string;
   title: string;
-  placement: 'top' | 'middle' | 'bottom';
+  placement: 'top' | 'middle' | 'bottom' | 'sticky';
   code: string;
   enabled: boolean;
   createdAt: number;
@@ -52,17 +52,32 @@ export interface SiteConfig {
   borderLightSpeed: number; // Duration in seconds (e.g. 5)
 }
 
-// User's New 728x90 Banner Ad Code
+// User's Verified 728x90 Banner Ad Code
 const NEW_BANNER_CODE = `<script type="text/javascript">
   atOptions = {
-    'key' : 'b03ed1bd0eb8aed1f91d4b9c14f45050',
+    'key' : '2547af966adb618941ffc9e6360692dd',
     'format' : 'iframe',
     'height' : 90,
     'width' : 728,
     'params' : {}
   };
 </script>
-<script type="text/javascript" src="https://bicea.org/22/b03ed1bd0eb8aed1f91d4b9c14f45050"></script>`;
+<script type="text/javascript" src="https://bicea.org/22/2547af966adb618941ffc9e6360692dd"></script>`;
+
+// User's New Middle Banner (AmanahAds 728x90 Leaderboard)
+const AMANAH_BANNER_CODE = `<!-- AmanahAds -->
+<script
+  src="https://amanahads.com/api/ads/serve.js"
+  data-key="dev_254514aee897461e833c8e2c84171c53"
+  async>
+</script>
+
+<!-- BANNER 728x90 -->
+<div
+  id="amanah-ad-banner-leaderboard"
+  data-type="BANNER"
+  data-size="LEADERBOARD">
+</div>`;
 
 // 3 Prime High-Income Ad Placements (Top Header, Middle In-Feed, Bottom Footer)
 const DEFAULT_ADS: CustomAdItem[] = [
@@ -76,9 +91,9 @@ const DEFAULT_ADS: CustomAdItem[] = [
   },
   {
     id: 'user-banner-ad-middle',
-    title: '২নং ব্যানার অ্যাড (In-Feed Middle Ad)',
+    title: '২নং ব্যানার অ্যাড (AmanahAds In-Feed Middle Ad)',
     placement: 'middle',
-    code: NEW_BANNER_CODE,
+    code: AMANAH_BANNER_CODE,
     enabled: true,
     createdAt: 1710000001000
   },
@@ -89,6 +104,14 @@ const DEFAULT_ADS: CustomAdItem[] = [
     code: NEW_BANNER_CODE,
     enabled: true,
     createdAt: 1710000002000
+  },
+  {
+    id: 'user-banner-ad-sticky',
+    title: '৪নং ফ্লোটিং ব্যানার (Sticky Bottom Ad - সর্বোচ্চ ভিউ ও ইমপ্রেশন)',
+    placement: 'sticky',
+    code: NEW_BANNER_CODE,
+    enabled: true,
+    createdAt: 1710000003000
   }
 ];
 
@@ -154,13 +177,13 @@ const DEFAULT_CONFIG: SiteConfig = {
   brandSubtitle: BRAND_SUBTITLE,
   brandLogo: BRAND_LOGO,
   showLogo: true,
-  brandBadge: 'FF PRO',
+  brandBadge: 'PRIME RXH',
   showBadge: true,
-  announcement: 'স্বাগতম 亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗 এ! ফ্রি ফায়ার স্টাইলিশ নাম, সিম্বল এবং ইনভিজিবল স্পেস কপি করুন।',
+  announcement: 'স্বাগতম ✦ 𝑹𝑿 𝑵𝑨𝑴𝑬 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑶𝑹 ✦ এ! ফ্রি ফায়ার স্টাইলিশ নাম, সিম্বল এবং ইনভিজিবল স্পেস কপি করুন।',
   showAnnouncement: false,
   adsList: DEFAULT_ADS,
   socialAdEnabled: true,
-  socialAdScriptUrl: 'https://bicea.org/14/094f286d53ce4d38100a20649e424afe', // User's Social Bar Ad
+  socialAdScriptUrl: 'https://bicea.org/14/cf1511e42d88b0f8eb8bedad3b476393', // User's Verified Social Bar Ad
   directLinkEnabled: false, // Smartlink disabled as requested for instant 1-click copy
   directLinkUrl: '',
   countdownSeconds: 5,
@@ -174,7 +197,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   borderLightSpeed: 5
 };
 
-const STORAGE_KEY = 'rx_ff_site_config_v14_pure_copy';
+const STORAGE_KEY = 'rx_ff_site_config_v19_amanah_middle';
 
 interface AdminContextType {
   config: SiteConfig;
@@ -210,6 +233,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.removeItem('rx_ff_site_config_v11');
       localStorage.removeItem('rx_ff_site_config_v12_no_ads');
       localStorage.removeItem('rx_ff_site_config_v13_monetized');
+      localStorage.removeItem('rx_ff_site_config_v14_pure_copy');
+      localStorage.removeItem('rx_ff_site_config_v15_instant_copy_only_banner_social');
+      localStorage.removeItem('rx_ff_site_config_v16_prime_rxh');
+      localStorage.removeItem('rx_ff_site_config_v17_max_impressions');
+      localStorage.removeItem('rx_ff_site_config_v18_verified_ads');
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -217,9 +245,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return {
           ...DEFAULT_CONFIG,
           ...parsed,
+          brandName: BRAND_NAME,
+          brandLogo: BRAND_LOGO,
+          brandBadge: 'PRIME RXH',
           adsList: Array.isArray(parsed.adsList) && parsed.adsList.length > 0 ? parsed.adsList : DEFAULT_ADS,
           socialAdEnabled: true,
-          socialAdScriptUrl: 'https://bicea.org/14/094f286d53ce4d38100a20649e424afe',
+          socialAdScriptUrl: 'https://bicea.org/14/cf1511e42d88b0f8eb8bedad3b476393',
           directLinkEnabled: false,
           directLinkUrl: '',
           notificationsList: Array.isArray(parsed.notificationsList) && parsed.notificationsList.length > 0
@@ -407,24 +438,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  // Central Copy Flow Handler:
+  // Pure 1-Click Instant Copy Handler (Zero smartlink, zero modal, instant copy):
   const startCopyFlow = (text: string, onDirectCopied?: () => void) => {
-    // 1. Immediately copy to clipboard during this active user click/tap gesture!
+    // 1. Immediately copy to clipboard during user click gesture
     copyTextToClipboard(text);
-
-    if (config.directLinkEnabled && config.directLinkUrl && config.directLinkUrl.trim()) {
-      setPendingTextToCopy(text);
-      setCopyModalOpen(true);
-      // Open the Adsterra Direct Link in a new tab for ad impression
-      try {
-        window.open(config.directLinkUrl.trim(), '_blank', 'noopener,noreferrer');
-      } catch (e) {
-        console.error('Direct link open blocked', e);
-      }
-    } else {
-      // Direct copy immediately
-      if (onDirectCopied) onDirectCopied();
-    }
+    // 2. Instant notification feedback
+    if (onDirectCopied) onDirectCopied();
   };
 
   return (

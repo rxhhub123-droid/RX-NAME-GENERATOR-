@@ -1,8 +1,8 @@
 // Styles, fonts, symbols, frames and words data for 亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗
 
-export const BRAND_NAME = '亗𝐑𝐗々𝐅𝐅 𝐒𝐓𝐘𝐋𝐄亗';
-export const BRAND_SUBTITLE = 'Free Fire styles web';
-export const BRAND_LOGO = 'https://i.postimg.cc/6q0XrBKv/file-00000000228082118a51e116fc12be7f.png';
+export const BRAND_NAME = '✦ 𝑹𝑿 𝑵𝑨𝑴𝑬 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑶𝑹 ✦';
+export const BRAND_SUBTITLE = '';
+export const BRAND_LOGO = '/logo.png';
 
 export const A = (s: string) => Array.from(s);
 export const rnd = (n: number) => Math.floor(Math.random() * n);
