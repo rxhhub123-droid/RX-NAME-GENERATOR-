@@ -83,33 +83,33 @@ const AMANAH_BANNER_CODE = `<!-- AmanahAds -->
 const DEFAULT_ADS: CustomAdItem[] = [
   {
     id: 'user-banner-ad-top',
-    title: '১নং ব্যানার অ্যাড (Top Header Ad)',
+    title: '১নং ব্যানার অ্যাড (AmanahAds Top Header Ad - সবার আগে)',
     placement: 'top',
-    code: NEW_BANNER_CODE,
+    code: AMANAH_BANNER_CODE,
     enabled: true,
     createdAt: 1710000000000
   },
   {
     id: 'user-banner-ad-middle',
-    title: '২নং ব্যানার অ্যাড (AmanahAds In-Feed Middle Ad)',
+    title: '২নং ব্যানার অ্যাড (Adsterra In-Feed Middle Ad - মাঝখানে)',
     placement: 'middle',
-    code: AMANAH_BANNER_CODE,
+    code: NEW_BANNER_CODE,
     enabled: true,
     createdAt: 1710000001000
   },
   {
     id: 'user-banner-ad-bottom',
-    title: '৩নং ব্যানার অ্যাড (Bottom Footer Ad)',
+    title: '৩নং ব্যানার অ্যাড (AmanahAds Bottom Footer Ad)',
     placement: 'bottom',
-    code: NEW_BANNER_CODE,
+    code: AMANAH_BANNER_CODE,
     enabled: true,
     createdAt: 1710000002000
   },
   {
     id: 'user-banner-ad-sticky',
-    title: '৪নং ফ্লোটিং ব্যানার (Sticky Bottom Ad - সর্বোচ্চ ভিউ ও ইমপ্রেশন)',
+    title: '৪নং ফ্লোটিং ব্যানার (AmanahAds Sticky Bottom Ad - একদম সবার নিচে)',
     placement: 'sticky',
-    code: NEW_BANNER_CODE,
+    code: AMANAH_BANNER_CODE,
     enabled: true,
     createdAt: 1710000003000
   }
@@ -197,7 +197,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   borderLightSpeed: 5
 };
 
-const STORAGE_KEY = 'rx_ff_site_config_v19_amanah_middle';
+const STORAGE_KEY = 'rx_ff_site_config_v21_amanah_bottom_replaced';
 
 interface AdminContextType {
   config: SiteConfig;
@@ -238,6 +238,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.removeItem('rx_ff_site_config_v16_prime_rxh');
       localStorage.removeItem('rx_ff_site_config_v17_max_impressions');
       localStorage.removeItem('rx_ff_site_config_v18_verified_ads');
+      localStorage.removeItem('rx_ff_site_config_v19_amanah_middle');
+      localStorage.removeItem('rx_ff_site_config_v20_amanah_top_adsterra_middle');
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
