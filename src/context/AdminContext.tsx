@@ -33,6 +33,11 @@ export interface SiteConfig {
   announcement: string;
   showAnnouncement: boolean;
   adsList: CustomAdItem[];
+  // In-Feed Ads every 5 names in category/search grids
+  inFeedAdEnabled: boolean;
+  inFeedAdCode: string;
+  inFeedAdCode1: string;
+  inFeedAdCode2: string;
   socialAdEnabled: boolean;
   socialAdScriptUrl: string;
   // Adsterra Direct Link Copy Settings
@@ -79,11 +84,40 @@ const AMANAH_BANNER_CODE = `<!-- AmanahAds -->
   data-size="LEADERBOARD">
 </div>`;
 
-// 3 Prime High-Income Ad Placements (Top Header, Middle In-Feed, Bottom Footer)
+// User's In-Feed Ad 1: Adsterra 728x90 Leaderboard Banner
+export const IN_FEED_AD_1 = `<script>
+  atOptions = {
+    'key' : 'b03ed1bd0eb8aed1f91d4b9c14f45050',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://bicea.org/22/b03ed1bd0eb8aed1f91d4b9c14f45050"></script>`;
+
+// User's In-Feed Ad 2: AmanahAds 728x90 Leaderboard Banner
+export const IN_FEED_AD_2 = `<!-- AmanahAds -->
+<script
+  src="https://amanahads.com/api/ads/serve.js"
+  data-key="dev_254514aee897461e833c8e2c84171c53"
+  async>
+</script>
+
+<!-- BANNER 728x90 -->
+<div
+  id="amanah-ad-banner-leaderboard"
+  data-type="BANNER"
+  data-size="LEADERBOARD">
+</div>`;
+
+export const AMANAH_IN_FEED_CODE = IN_FEED_AD_2;
+
+// Prime High-Income Ad Placements (Top Header, Middle In-Feed)
 const DEFAULT_ADS: CustomAdItem[] = [
   {
     id: 'user-banner-ad-top',
-    title: '১নং ব্যানার অ্যাড (AmanahAds Top Header Ad - সবার আগে)',
+    title: '১নং ব্যানার অ্যাড (AmanahAds Top Header Ad - সবার আগে ও উপরে)',
     placement: 'top',
     code: AMANAH_BANNER_CODE,
     enabled: true,
@@ -91,27 +125,11 @@ const DEFAULT_ADS: CustomAdItem[] = [
   },
   {
     id: 'user-banner-ad-middle',
-    title: '২নং ব্যানার অ্যাড (Adsterra In-Feed Middle Ad - মাঝখানে)',
+    title: '২নং ব্যানার অ্যাড (AmanahAds Middle In-Feed Ad - মাঝখানে)',
     placement: 'middle',
-    code: NEW_BANNER_CODE,
+    code: AMANAH_BANNER_CODE,
     enabled: true,
     createdAt: 1710000001000
-  },
-  {
-    id: 'user-banner-ad-bottom',
-    title: '৩নং ব্যানার অ্যাড (AmanahAds Bottom Footer Ad)',
-    placement: 'bottom',
-    code: AMANAH_BANNER_CODE,
-    enabled: true,
-    createdAt: 1710000002000
-  },
-  {
-    id: 'user-banner-ad-sticky',
-    title: '৪নং ফ্লোটিং ব্যানার (AmanahAds Sticky Bottom Ad - একদম সবার নিচে)',
-    placement: 'sticky',
-    code: AMANAH_BANNER_CODE,
-    enabled: true,
-    createdAt: 1710000003000
   }
 ];
 
@@ -182,6 +200,10 @@ const DEFAULT_CONFIG: SiteConfig = {
   announcement: 'স্বাগতম ✦ 𝑹𝑿 𝑵𝑨𝑴𝑬 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑶𝑹 ✦ এ! ফ্রি ফায়ার স্টাইলিশ নাম, সিম্বল এবং ইনভিজিবল স্পেস কপি করুন।',
   showAnnouncement: false,
   adsList: DEFAULT_ADS,
+  inFeedAdEnabled: true,
+  inFeedAdCode: IN_FEED_AD_2,
+  inFeedAdCode1: IN_FEED_AD_2, // AmanahAds (উপরে)
+  inFeedAdCode2: IN_FEED_AD_1, // Adsterra (নিচে)
   socialAdEnabled: true,
   socialAdScriptUrl: 'https://bicea.org/14/cf1511e42d88b0f8eb8bedad3b476393', // User's Verified Social Bar Ad
   directLinkEnabled: false, // Smartlink disabled as requested for instant 1-click copy
@@ -197,7 +219,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   borderLightSpeed: 5
 };
 
-const STORAGE_KEY = 'rx_ff_site_config_v21_amanah_bottom_replaced';
+const STORAGE_KEY = 'rx_ff_site_config_v26_clean_bottom_no_ad';
 
 interface AdminContextType {
   config: SiteConfig;
@@ -240,6 +262,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.removeItem('rx_ff_site_config_v18_verified_ads');
       localStorage.removeItem('rx_ff_site_config_v19_amanah_middle');
       localStorage.removeItem('rx_ff_site_config_v20_amanah_top_adsterra_middle');
+      localStorage.removeItem('rx_ff_site_config_v21_amanah_bottom_replaced');
+      localStorage.removeItem('rx_ff_site_config_v22_infeed_5names');
+      localStorage.removeItem('rx_ff_site_config_v23_infeed_alternating_ads');
+      localStorage.removeItem('rx_ff_site_config_v24_amanah_top_adsterra_bottom');
+      localStorage.removeItem('rx_ff_site_config_v25_amanah_clean_banner');
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -251,6 +278,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           brandLogo: BRAND_LOGO,
           brandBadge: 'PRIME RXH',
           adsList: Array.isArray(parsed.adsList) && parsed.adsList.length > 0 ? parsed.adsList : DEFAULT_ADS,
+          inFeedAdEnabled: parsed.inFeedAdEnabled !== undefined ? parsed.inFeedAdEnabled : true,
+          inFeedAdCode1: parsed.inFeedAdCode1 || IN_FEED_AD_2,
+          inFeedAdCode2: parsed.inFeedAdCode2 || IN_FEED_AD_1,
+          inFeedAdCode: parsed.inFeedAdCode || IN_FEED_AD_2,
           socialAdEnabled: true,
           socialAdScriptUrl: 'https://bicea.org/14/cf1511e42d88b0f8eb8bedad3b476393',
           directLinkEnabled: false,

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useAdmin, CustomAdItem, NotificationItem } from '../context/AdminContext';
+import { useAdmin, CustomAdItem, NotificationItem, IN_FEED_AD_1, IN_FEED_AD_2, AMANAH_IN_FEED_CODE } from '../context/AdminContext';
 import { BRAND_LOGO } from '../data/styles';
 import { generateNoticeTranslations } from '../utils/notificationTranslator';
 import {
@@ -551,6 +551,87 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onNotify }) => {
                     কোনো সক্রিয় ব্যানার অ্যাড নেই। উপরে <strong>"নতুন অ্যাড যোগ করুন"</strong> বাটনে ক্লিক করে অ্যাড যুক্ত করুন।
                   </div>
                 )}
+              </div>
+
+              {/* In-Feed Banner Ads (Every 5 Names) */}
+              <div className="p-4 rounded-2xl bg-[#16161d] border border-red-500/30 space-y-4 mt-4 shadow-lg shadow-black/40">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-red-400" />
+                      প্রতি ৫টি নামের পর অল্টারনেটিং ব্যানার অ্যাড (In-Feed Ads Every 5 Names)
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      ক্যাটাগরি এবং সার্চ রেজাল্টের নামের লিস্টে প্রতি ৫টি নামের পর ১ম ও ২য় অ্যাড পর্যায়ক্রমে (১, ২, ১, ২...) দেখাবে
+                    </p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.inFeedAdEnabled}
+                      onChange={(e) => setFormData({ ...formData, inFeedAdEnabled: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                  </label>
+                </div>
+
+                {/* Ad 1 (AmanahAds - উপরে) */}
+                <div className="space-y-2 pt-2 border-t border-[#25252d]">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      ১ম ব্যানার কোড (AmanahAds - স্লট ১, ৩, ৫, ৭... উপরে):
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, inFeedAdCode1: IN_FEED_AD_2 }));
+                        onNotify('১ম অ্যাড কোড (AmanahAds) রিস্টোর করা হয়েছে!');
+                      }}
+                      className="text-[10px] text-emerald-400 hover:text-white font-bold underline"
+                    >
+                      AmanahAds কোড রিস্টোর করুন
+                    </button>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={formData.inFeedAdCode1}
+                    onChange={(e) => setFormData({ ...formData, inFeedAdCode1: e.target.value })}
+                    placeholder="<script>...</script>..."
+                    className="w-full bg-[#0d0d10] border border-[#2d2d38] rounded-xl p-3 text-xs font-mono text-zinc-300 focus:border-emerald-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Ad 2 (Adsterra - নিচে) */}
+                <div className="space-y-2 pt-2 border-t border-[#25252d]">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-red-500" />
+                      ২য় ব্যানার কোড (Adsterra b03ed1bd... - স্লট ২, ৪, ৬, ৮... নিচে):
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, inFeedAdCode2: IN_FEED_AD_1 }));
+                        onNotify('২য় অ্যাড কোড (Adsterra) রিস্টোর করা হয়েছে!');
+                      }}
+                      className="text-[10px] text-red-400 hover:text-white font-bold underline"
+                    >
+                      Adsterra কোড রিস্টোর করুন
+                    </button>
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={formData.inFeedAdCode2}
+                    onChange={(e) => setFormData({ ...formData, inFeedAdCode2: e.target.value })}
+                    placeholder="<script>...</script>..."
+                    className="w-full bg-[#0d0d10] border border-[#2d2d38] rounded-xl p-3 text-xs font-mono text-zinc-300 focus:border-red-500 focus:outline-none"
+                  />
+                  <p className="text-[11px] text-zinc-400">
+                    💡 AmanahAds উপরে ১ম থেকে শুরু হয়ে Adsterra এর সাথে সমানভাবে ৭২৮×৯০ আকারে প্রতি ৫টি নামের পর ১০০+ নাম পর্যন্ত চলতে থাকবে।
+                  </p>
+                </div>
               </div>
 
               {/* Social Bar Global Script Ad (Ad 2) */}

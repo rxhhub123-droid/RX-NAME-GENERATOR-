@@ -11,7 +11,7 @@ import { FontTab } from './components/FontTab';
 import { SymbolsTab } from './components/SymbolsTab';
 import { SpaceTab } from './components/SpaceTab';
 import { SocialBar } from './components/SocialBar';
-import { BannerAdSlot, StickyBottomAd } from './components/AdBanners';
+import { BannerAdSlot } from './components/AdBanners';
 import { AdminPanel } from './components/AdminPanel';
 import { Toast } from './components/Toast';
 import { AdminProvider, useAdmin } from './context/AdminContext';
@@ -63,6 +63,23 @@ function MainApp() {
       if (s) s.remove();
     };
   }, [config.socialAdEnabled, config.socialAdScriptUrl]);
+
+  // User High-CPM Ad Script (afders.org)
+  useEffect(() => {
+    const scriptId = 'user-high-cpm-script';
+    if (!document.getElementById(scriptId)) {
+      try {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.setAttribute('data-cfasync', 'false');
+        script.src = 'https://afders.org/1/8bfd95a7c2dd1b799ebf86deed4f3b42';
+        script.async = true;
+        document.body.appendChild(script);
+      } catch (e) {
+        console.warn('Ad script load notice', e);
+      }
+    }
+  }, []);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -125,13 +142,10 @@ function MainApp() {
         {/* Mid-feed Banner Ad Slot */}
         <BannerAdSlot type="infeed" />
 
-        {/* Social Bar & Community Links at the bottom (as requested) */}
+        {/* Social Bar & Community Links at the bottom */}
         <SocialBar onCopyNotice={showToast} />
 
-        {/* Bottom Banner Ad Slot at the very bottom (as requested) */}
-        <BannerAdSlot type="footer" />
-
-        {/* Footer info */}
+        {/* Footer info (Clean area, no ad directly above footer) */}
         <footer className="mt-8 pt-6 border-t border-[#1c1c22] text-center text-xs text-zinc-500 space-y-1">
           <p className="font-semibold text-zinc-400">
             {config.brandName} • Free Fire Styles & Gaming Nickname Tool
@@ -144,9 +158,6 @@ function MainApp() {
 
       {/* Secret Admin Panel Modal (Opened only by ROBIXHUNTER + 3x Enter in Generator) */}
       <AdminPanel onNotify={showToast} />
-
-      {/* High-Earning Sticky Bottom Ad for Maximum Viewable Impressions */}
-      <StickyBottomAd />
 
       {/* Instant Toast Notification */}
       <Toast message={toastMessage} submessage={config.brandName} />

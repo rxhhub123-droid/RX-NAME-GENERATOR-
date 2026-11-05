@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { NameCard } from './NameCard';
+import { InFeedNameAd } from './AdBanners';
 import {
   BASE_STYLES,
   EXTRA_STYLES,
@@ -206,13 +207,17 @@ export const GeneratorTab: React.FC<GeneratorTabProps> = ({ onCopyNotice }) => {
       {/* Grid of Results strictly for typed name */}
       {cleanKeyword && visibleNames.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {visibleNames.map(item => (
-            <NameCard
-              key={item.id}
-              name={item.name}
-              label={item.style}
-              onCopy={onCopyNotice}
-            />
+          {visibleNames.map((item, idx) => (
+            <React.Fragment key={item.id}>
+              <NameCard
+                name={item.name}
+                label={item.style}
+                onCopy={onCopyNotice}
+              />
+              {(idx + 1) % 5 === 0 && (
+                <InFeedNameAd slotIndex={Math.floor((idx + 1) / 5)} />
+              )}
+            </React.Fragment>
           ))}
         </div>
       ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Megaphone, X } from 'lucide-react';
-import { useAdmin, CustomAdItem } from '../context/AdminContext';
+import { useAdmin, CustomAdItem, IN_FEED_AD_1, IN_FEED_AD_2 } from '../context/AdminContext';
 
 interface BannerAdProps {
   type: 'header' | 'infeed' | 'footer';
@@ -172,4 +172,50 @@ export const StickyBottomAd: React.FC = () => {
     </div>
   );
 };
+
+export const InFeedNameAd: React.FC<{ slotIndex: number }> = ({ slotIndex }) => {
+  const { config } = useAdmin();
+
+  if (!config.inFeedAdEnabled) return null;
+
+  // Alternating between 2 banner ads:
+  // Slot 1 (odd) -> AmanahAds (উপরে)
+  // Slot 2 (even) -> Adsterra (নিচে)
+  // ... cycles continuously across 100+ slots with identical 728x90 sizing
+  const isAmanah = slotIndex % 2 === 1;
+  const adCode = isAmanah
+    ? (config.inFeedAdCode1 || IN_FEED_AD_2)
+    : (config.inFeedAdCode2 || IN_FEED_AD_1);
+
+  if (!adCode || !adCode.trim()) return null;
+
+  const adItem: CustomAdItem = {
+    id: `infeed-name-slot-${slotIndex}-${isAmanah ? 'amanah' : 'adsterra'}`,
+    title: `In-Feed Banner Slot #${slotIndex} (${isAmanah ? 'AmanahAds 728x90' : 'Adsterra 728x90'})`,
+    placement: 'middle',
+    code: adCode,
+    enabled: true,
+    createdAt: Date.now()
+  };
+
+  return (
+    <div className="col-span-full my-3 w-full flex flex-col items-center justify-center animate-in fade-in duration-300">
+      <div className="w-full max-w-[760px] p-2.5 sm:p-3 rounded-2xl bg-[#121218]/90 border border-[#252533] shadow-xl shadow-black/50 flex flex-col items-center justify-center transition-all hover:border-red-500/30">
+        <div className="flex items-center justify-between w-full px-2 mb-1.5 text-[10px] uppercase font-bold text-zinc-500 tracking-wider select-none">
+          <div className="flex items-center gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${isAmanah ? 'bg-emerald-400 shadow-emerald-400' : 'bg-red-500 shadow-red-500'} shadow-sm animate-pulse`} />
+            <span>বিজ্ঞাপন • SPONSORED BANNER</span>
+          </div>
+          <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#1b1b26] text-zinc-400 font-mono border border-zinc-800">
+            Slot #{slotIndex} • {isAmanah ? 'AmanahAds' : 'Adsterra'}
+          </span>
+        </div>
+        <div className="w-full flex justify-center items-center overflow-hidden">
+          <DynamicAdFrame ad={adItem} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 

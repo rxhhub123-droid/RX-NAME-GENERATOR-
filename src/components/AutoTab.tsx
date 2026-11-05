@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { NameCard } from './NameCard';
+import { InFeedNameAd } from './AdBanners';
 import {
   STYLES,
   FRAMES,
@@ -130,13 +131,17 @@ export const AutoTab: React.FC<AutoTabProps> = ({ onCopyNotice }) => {
 
       {/* Grid of Names */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {names.map(item => (
-          <NameCard
-            key={item.id}
-            name={item.name}
-            label={item.style}
-            onCopy={onCopyNotice}
-          />
+        {names.map((item, idx) => (
+          <React.Fragment key={item.id}>
+            <NameCard
+              name={item.name}
+              label={item.style}
+              onCopy={onCopyNotice}
+            />
+            {(idx + 1) % 5 === 0 && (
+              <InFeedNameAd slotIndex={Math.floor((idx + 1) / 5)} />
+            )}
+          </React.Fragment>
         ))}
       </div>
 
